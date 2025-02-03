@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dbt-pubsub-runner
+description: A Helm chart for deploying a dbt Pub/Sub runner
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - name: pubsub-dbt-runner
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: PROJECT_ID
+          value: "{{ .Values.projectId }}"
+        - name: SUBSCRIPTION_NAME
+          value: "{{ .Values.subscriptionName }}"
+        - name: DBT_PROFILES_DIR
+          value: "{{ .Values.dbt.profilesDir }}"
+        - name: DBT_PROJECT_DIR
+          value: "{{ .Values.dbt.projectDir }}"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/secrets/key.json"
+        volumeMounts:
+        - name: bigquery-key
+          mountPath: "/secrets"
+          readOnly: true
+        resources:
+          limits:
+            memory: {{ .Values.resources.limits.memory }}
+            cpu: {{ .Values.resources.limits.cpu }}
+          requests:
+            memory: {{ .Values.resources.requests.memory }}
+            cpu: {{ .Values.resources.requests.cpu }}
+      volumes:
+      - name: bigquery-key
+        secret:
+          secretName: {{ .Values.secrets.bigqueryKeySecret }}

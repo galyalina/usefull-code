@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: gcr.io/your-project-id/dbt-pubsub-runner
+  tag: latest
+  pullPolicy: Always
+
+projectId: "your-gcp-project-id"
+subscriptionName: "dbt-transformations-subscription"
+
+resources:
+  limits:
+    memory: "256Mi"
+    cpu: "500m"
+  requests:
+    memory: "128Mi"
+    cpu: "250m"
+
+serviceAccount:
+  create: true
+  name: ""
+
+secrets:
+  bigqueryKeySecret: "bigquery-key"
+
+dbt:
+  profilesDir: "/app/dbt/profiles"
+  projectDir: "/app/dbt/project"
